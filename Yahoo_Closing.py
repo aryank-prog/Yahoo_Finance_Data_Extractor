@@ -1,8 +1,13 @@
+#gets the closing price of the ticker symbol inputted
 from bs4 import BeautifulSoup
 import requests
 
+"""
+asks user for ticker
+returns the soup and ticker inputted as a tuple
+"""
 def get_closing_soup_and_ticker():
-    ticker = input("Enter Ticker: ")
+    ticker = input("Enter Ticker: ").upper()
     url = f"https://finance.yahoo.com/quote/{ticker}?p={ticker}&.tsrc=fin-srch"
     #try and get the error message to display
     try:
@@ -15,7 +20,11 @@ def get_closing_soup_and_ticker():
     
     return (soup, ticker)
 
-
+"""
+takes in the soup from get_closing_soup_and_ticker
+gets both the closing price and date for the ticker selected by the user
+returns the price and date as a tuple
+"""
 def get_closing_info(soup):
     div = soup.find("div", class_="D(ib) Mend(20px)")
     price = div.find("span", class_="Trsdu(0.3s) Fw(b) Fz(36px) Mb(-4px) D(ib)").text

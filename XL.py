@@ -1,3 +1,4 @@
+#writes all the data into an excel file
 import xlsxwriter
 
 def write(puts_dict):
@@ -26,5 +27,6 @@ def write(puts_dict):
         outSheet.write(item+1, 4, puts_dict[titles[4]][item])
         outSheet.write(item+1, 5, puts_dict[titles[5]][item])
         outSheet.write(item+1, 6, puts_dict[titles[6]][item])
+        outSheet.write(item+1, 7, puts_dict[titles[7]][item])
 
     outWorkbook.close()

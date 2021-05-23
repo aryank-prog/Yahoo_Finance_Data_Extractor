@@ -1,9 +1,15 @@
+#return a dictionary that contains all the required Puts data
 from bs4 import BeautifulSoup
 import requests
 from datetime import date, datetime, timezone
 
 from Yahoo_Closing import *
 
+"""
+user inputs a date which they want the Puts info for
+uses the datetime package to convert the inputted date into unix time
+returns the unix time (as an int)
+"""
 def get_date():
     wanted_date = input("Input a date in the following format: month-day-year\n")
     #wanted_date = input("Input a date in the following format: month-day-year\n Choices:\n 05-21-2021\n 05-28-2021\n 06-04-2021\n 06-11-2021\n 06-18-2021\n 06-25-2021\n")
@@ -16,6 +22,9 @@ def get_date():
     
     return int(timestamp)    
 
+"""
+returns the soup for the selected date's Puts info
+"""
 def get_options_soup(timestamp, ticker):
     #example: https://finance.yahoo.com/quote/TSLA/options?date=1647561600&p=TSLA
     url = f"https://finance.yahoo.com/quote/{ticker}/options?date={timestamp}&p={ticker}"
@@ -32,7 +41,12 @@ def check_date(soup):
     return div.find("span", class_="Fz(s) Mend(10px)").text
 """
 
-def get_info(soup):
+"""
+takes the selected date's soup and the ticker's closing price as an input
+gets all the necessary data from the Puts table
+returns a dictionary of all the received data
+"""
+def get_info(soup, closing_price):
     #navigate to the puts table
     table = soup.find("table", class_="puts W(100%) Pos(r) list-options")
 
@@ -92,9 +106,15 @@ def get_info(soup):
     volume_lst = volumes
     open_interest_lst = open_interests
 
+    #creates the list that contains just the closing price
+    closing_price_lst = []
+    for i in range(len(contract_name_lst)):
+        closing_price_lst.append(closing_price)
+
     puts_dict = {}
 
-    puts_dict["Contract Name"] = contract_name_lst    
+    puts_dict["Contract Name"] = contract_name_lst   
+    puts_dict["Closing Price"] = closing_price_lst 
     puts_dict["Strike"] = strikes_lst
     puts_dict["Last Price"] = last_price_lst
     puts_dict["Bid"] = bid_lst
