@@ -172,4 +172,59 @@ def get_info(soup, closing_price):
 
     return puts_dict
 
+"""
+takes in the list of dictionaries that contain all the info for each timestamp
+merges the dictioaries into one
+returns the merged dictionary
+"""
+def merge(puts):
+    merged = {}
+    names = []
+    closing_prices = []
+    strikes = []
+    last_prices = []
+    bids = []
+    asks = []
+    volumes = []
+    open_interests = []
+
+    for item in puts:
+        for j in item:
+            if j == "Contract Name":
+                names.extend(item[j])
+            elif j == 'Closing Price':
+                closing_prices.extend(item[j])
+            elif j == "Strike":
+                strikes.extend(item[j])
+            elif j == "Last Price":
+                last_prices.extend(item[j])
+            elif j == "Bid":
+                bids.extend(item[j])
+            elif j == "Ask":
+                asks.extend(item[j])
+            elif j == "Volume":
+                volumes.extend(item[j])
+            elif j == "Open Interest":
+                open_interests.extend(item[j])
+    
+    for item in puts:
+        for j in item:
+            if j == "Contract Name":
+                merged[j] = names
+            elif j == 'Closing Price':
+                merged[j] = closing_prices
+            elif j == "Strike":
+                merged[j] = strikes
+            elif j == "Last Price":
+                merged[j] = last_prices
+            elif j == "Bid":
+                merged[j] = bids
+            elif j == "Ask":
+                merged[j] = asks
+            elif j == "Volume":
+                merged[j] = volumes
+            elif j == "Open Interest":
+                merged[j] = open_interests
+            
+    return merged
 

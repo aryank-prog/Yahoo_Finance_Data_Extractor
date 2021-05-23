@@ -28,9 +28,11 @@ def main():
     for soup in options_soups:
         puts_dict = get_info(soup, closing_info[0])
         soups_lst.append(puts_dict)
+    puts = merge(soups_lst)
+    
     ##########
 
     #XL 
-    write(puts_dict)
+    write(puts)
 
 main()
