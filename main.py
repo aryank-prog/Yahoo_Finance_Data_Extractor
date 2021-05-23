@@ -20,11 +20,14 @@ def main():
     ##########
 
     #Yahoo Options
-    timestamp = get_date()
-    options_soup = get_options_soup(timestamp, ticker)
+    dates = get_dates()
+    timestamps = get_unix(dates)
+    options_soups = get_options_soup(timestamps, ticker)
     #print(check_date(options_soup))
-    puts_dict = get_info(options_soup, closing_info[0])
-
+    soups_lst = []
+    for soup in options_soups:
+        puts_dict = get_info(soup, closing_info[0])
+        soups_lst.append(puts_dict)
     ##########
 
     #XL 

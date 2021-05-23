@@ -1,6 +1,6 @@
 #return a dictionary that contains all the required Puts data
 from bs4 import BeautifulSoup
-import requests
+import requests, re
 from datetime import date, datetime, timezone
 
 from Yahoo_Closing import *
@@ -9,7 +9,7 @@ from Yahoo_Closing import *
 user inputs a date which they want the Puts info for
 uses the datetime package to convert the inputted date into unix time
 returns the unix time (as an int)
-"""
+
 def get_date():
     wanted_date = input("Input a date in the following format: month-day-year\n")
     #wanted_date = input("Input a date in the following format: month-day-year\n Choices:\n 05-21-2021\n 05-28-2021\n 06-04-2021\n 06-11-2021\n 06-18-2021\n 06-25-2021\n")
@@ -21,17 +21,65 @@ def get_date():
     timestamp = dt.replace(tzinfo=timezone.utc).timestamp()
     
     return int(timestamp)    
+"""
 
 """
-returns the soup for the selected date's Puts info
+gets all the dates that need to be analyzed (for the year 2021)
+returns a list of all the dates
 """
-def get_options_soup(timestamp, ticker):
-    #example: https://finance.yahoo.com/quote/TSLA/options?date=1647561600&p=TSLA
-    url = f"https://finance.yahoo.com/quote/{ticker}/options?date={timestamp}&p={ticker}"
+def get_dates():
+    url = "https://finance.yahoo.com/quote/TSLA/options?p=TSLA"
     r = requests.get(url)
     soup = BeautifulSoup(r.content, "html.parser")
 
-    return soup
+    div = soup.find("div", class_="Fl(start) Pend(18px)")
+    lst = div.find_all("option")    
+
+    dates = []
+    for item in lst:
+        if "2021" in item.text:
+            dates.append(item.text)
+
+    return dates
+
+"""
+gets the unix timestamp of each date in the imputted list
+returns a list of the unix timestamps for each date
+"""
+def get_unix(dates):
+    timestamps = []
+    for date in dates:
+        month_re = "(\w+\w) [\d]"
+        day_re = "(\d{1,2})[,]"
+        
+        month_name = re.findall(month_re, date)[0]
+        day = int(re.findall(day_re, date)[0])
+        year = 2021
+
+        datetime_object = datetime.strptime(month_name, "%B")
+        month_num = int(datetime_object.month)
+
+        dt = datetime(int(year),int(month_num), int(day))
+        timestamp = dt.replace(tzinfo=timezone.utc).timestamp()
+
+        timestamps.append(int(timestamp))
+
+    return timestamps
+
+
+"""
+returns the soups for all the selected date's Puts info
+"""
+def get_options_soup(timestamps, ticker):
+    #example: https://finance.yahoo.com/quote/TSLA/options?date=1647561600&p=TSLA
+    soups = []
+    for item in timestamps:
+        url = f"https://finance.yahoo.com/quote/{ticker}/options?date={item}&p={ticker}"
+        r = requests.get(url)
+        soup = BeautifulSoup(r.content, "html.parser")
+        soups.append(soup)
+
+    return soups
 
 """
 #real date is still not being displayed!!
