@@ -27,8 +27,8 @@ def get_date():
 gets all the dates that need to be analyzed (for the year 2021)
 returns a list of all the dates
 """
-def get_dates():
-    url = "https://finance.yahoo.com/quote/TSLA/options?p=TSLA"
+def get_dates(ticker):
+    url = f"https://finance.yahoo.com/quote/{ticker}/options?p={ticker}"
     r = requests.get(url)
     soup = BeautifulSoup(r.content, "html.parser")
 

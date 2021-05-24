@@ -20,7 +20,7 @@ def main():
     ##########
 
     #Yahoo Options
-    dates = get_dates()
+    dates = get_dates(ticker)
     timestamps = get_unix(dates)
     options_soups = get_options_soup(timestamps, ticker)
     #print(check_date(options_soup))
